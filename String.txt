@@ -53,3 +53,5 @@ int my_strlen1(char* p)
 								while(*dest++ = *src++)							{
 										;																	}									return ret;//返回第一个参数的一份拷贝，即一个指向目标字符串的指针
 								}
+
+写于2016年5月7日！
