@@ -257,7 +257,8 @@ void TestSort()
 	Print(a,size);
 }
 
----------------------------------------------------------------------------- 堆应用2 找出N个数中最大的前K个数 --------------------
+-----------------------------------------------------------------
+----------- 堆应用2 找出N个数中最大的前K个数 --------------------
 -----------------------------------------------------------------
 
 //找出N个数中最大的前K个数
@@ -322,3 +323,85 @@ void TestSearch()
 	int* ret =  HeapSet(a,size,k);
 	Print(ret,k);
 }
+
+-----------------------------------------------------------------
+------------------- 堆应用3 优先级队列 --------------------------
+-----------------------------------------------------------------
+
+#pragma once 
+
+#include<iostream>
+#include"heap.h"
+using namespace std;
+
+template<class T,class Comper = Greater<T> >//默认大堆
+class PriorityQueue
+{
+public:
+	void Push(const T& x)//时间复杂度为O（lg（N））
+	{
+		_hp.Push(x);
+	}
+
+	void Pop()//时间复杂度O（lg（N））
+	{
+		_hp.Pop();
+	}
+
+	size_t Size()//大小
+	{
+		return _hp.Size();
+	}
+
+	bool Empty()
+	{
+		return _hp.Empty();
+	}
+
+	T& GetTop()
+	{
+		return _hp.GetTop();
+	}
+
+	void Print()
+	{
+		return _hp.PrintHeap();
+	}
+private:
+	Heap<T,Comper> _hp;
+};
+
+void TestQueue()
+{
+	int a[] = { 10, 11, 13, 12, 16, 18, 15, 17, 14, 19 };
+	PriorityQueue<int,Greater<int>> pq1;
+	pq1.Push(10);
+	pq1.Push(11);
+	pq1.Push(13);
+	pq1.Push(12);
+	pq1.Push(16);
+	pq1.Push(18);
+	pq1.Push(15);
+	pq1.Push(17);
+	pq1.Push(14);
+	pq1.Push(19);
+
+	pq1.Print();
+	cout<<endl;
+
+	PriorityQueue<int,Less<int>> pq2;
+	pq2.Push(10);
+	pq2.Push(11);
+	pq2.Push(13);
+	pq2.Push(12);
+	pq2.Push(16);
+	pq2.Push(18);
+	pq2.Push(15);
+	pq2.Push(17);
+	pq2.Push(14);
+	pq2.Push(19);
+
+	pq2.Print();
+
+}
+
