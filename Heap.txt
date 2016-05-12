@@ -1,0 +1,257 @@
+
+------------------------------------------------------------------------------------ 实现大小堆及堆的应用 ------------------------
+-----------------------------------------------------------------
+
+#pragma once
+
+#include<iostream>
+using namespace std;
+#include<assert.h>
+#include<vector>
+
+//仿函数
+template<class T>
+struct Less //小于
+{
+	bool operator() (const T& l,const T& r)
+	{
+		return l < r;
+	}
+};
+
+template<class T>
+struct Greater //大于
+{
+	bool operator() (const T& l,const T& r)
+	{
+		return l > r;
+	}
+};
+
+template<class T ,class Comper = Greater<T>> //默认为大堆
+class Heap
+{
+public:
+	Heap()
+		:_a(NULL)
+	{ }
+
+	//构造堆
+	Heap(const T* a,int size)
+	{
+		_a.reserve(size);
+		for(int i=0;i<size;i++)
+		{
+			_a.push_back(a[i]);
+		}
+		//建堆
+		int Size = size;
+		for(int i = (_a.size()-2)/2;i >= 0;i--)
+		{
+			_AdjustDown(i,Size);
+		}
+	}
+
+	//拷贝构造
+	Heap(const vector<T>& vec)
+		:_a(NULL)
+	{
+		_a.reserve(vec.size());
+		for(int i=0;i<size;i++)
+		{
+			_a.push_back(vec[i]);
+		}
+	}
+
+	//插入一个元素x，先插入数组中，再根据具体元素大小向上调整确定插入元素的位置
+	void Push(const T& x)
+	{
+		_a.push_back(x);
+		_AdjustUp(_a.size()-1);
+	}
+
+	//删除根节点
+	void Pop()
+	{
+		size_t size = _a.size();
+		assert(size>0);//防御式编程，确保是否可以删除元素
+		swap(_a[0],_a[size-1]);//若直接删除堆的根节点，会使堆的结构混乱
+		_a.pop_back();//将根节点与堆的最后一个结点交换位置，此时在对元素进行删除，再进行调试
+		size = _a.size();
+		_AdjustDown(0,size);
+	}
+
+	//访问堆的根节点
+	T& GetTop()
+	{
+		size_t size = _a.size();
+		assert(size>0);
+		return _a[0];
+	}
+
+	bool Empty()//判空
+	{
+		size_t size = _a.size();
+		assert(size>=0);
+		return size==0;
+	}
+
+	size_t Size()//求大小
+	{
+		size_t size = _a.size();
+		assert(size >= 0);
+		return size;
+	}
+
+	void PrintHeap()//打印
+	{
+		cout<<"堆的序列："<<endl;
+		for(int i = 0;i < (int)Size();i++)
+		{
+			cout<<_a[i]<<" ";
+		}
+		cout<<endl;
+	}
+
+protected:
+	void _AdjustDown(int parent,int size)//向下调整
+	{
+		//指向左孩子
+		int child = parent*2 + 1; 
+		while (child < size)
+		{
+			Comper com;
+			//选出左右子节点大的那一个
+			if(child+1<size && com(_a[child+1],_a[child]))
+			{
+				child++;
+			}
+			//如果子>父，则交换，并继续往下调整
+			if(com(_a[child],_a[parent]))
+			{
+				swap(_a[child],_a[parent]);
+				parent = child;
+				child = parent*2+1;
+			}
+			else
+			{
+				break;
+			}
+		}
+	}
+
+	//向上调整
+	void _AdjustUp(int child)
+	{
+		int parent = (child - 1)/2;
+		int size = _a.size();//size 的类型为int，若为size_t循环条件且为>=0,则死循环
+		Comper com;
+		while (child>0)//若child为0，则说明已到根节点，无需上调
+		{
+			//向上调整时，无需看左右结点哪个值大，只需要看是否父节点<子节点
+			if(com(_a[child],_a[parent]))
+			{
+				swap(_a[child],_a[parent]);
+				child = parent;
+				parent = (child-1)/2;
+			}
+			else
+			{
+				break;
+			}
+		}
+	}
+
+protected:
+	vector<T> _a;
+};
+
+void HeapTest()
+{
+	int a[] = { 10, 11, 13, 12, 16, 18, 15, 17, 14, 19 };
+	Heap<int,Greater<int>> h1(a,sizeof(a)/sizeof(a[0]));
+	h1.PrintHeap();
+
+	cout<<h1.GetTop()<<endl;
+	cout<<h1.Size()<<endl;
+
+	h1.Push(30);
+	h1.PrintHeap();
+
+	h1.Pop();
+	h1.PrintHeap();
+
+	cout<<endl;
+
+	Heap<int,Less<int>> h2(a,sizeof(a)/sizeof(a[0]));
+	h2.PrintHeap();
+
+	cout<<h2.GetTop()<<endl;
+	cout<<h2.Size()<<endl;
+
+	h2.Push(0);
+	h2.PrintHeap();
+
+	h2.Pop();
+	h2.PrintHeap();
+}
+
+-----------------------------------------------------------------
+------------------- 堆的应用1、堆排序  --------------------------
+-----------------------------------------------------------------
+
+void AdjustDown(int *a,int n,int parent)//建成最大堆
+{
+	int child = parent*2+1;
+	while (child < n)
+	{
+		if(child+1<n && a[child] < a[child+1])
+		{
+			++child;
+		}
+		if(a[child] > a[parent])
+		{
+			swap(a[child],a[parent]);
+			parent = child;
+			child = parent*2 + 1;
+		}
+		else
+		{
+			break;
+		}
+	}
+}
+
+void HeapSort(int* a,int n)
+{
+	assert(a);
+	//建成大堆
+	for(int i = (n - 2)/2;i >= 0;i--)
+	{
+		AdjustDown(a,n,i);
+	}
+	//交换第一个元素和最后一个元素，在进行调整，再交换第一个和倒数第一个，以此类推
+	for(int i = 0;i < n;i++)
+	{
+		swap(a[0],a[n-i-1]);
+		AdjustDown(a,n-i-1,0);
+	}
+}
+
+void Print(int* a,int n)
+{
+	cout<<"堆排序后为："<<endl;
+	for(int i = 0;i < n;i++)
+	{
+		cout<<a[i]<<" "; 
+	}
+	cout<<endl;
+}
+
+void TestSort()
+{
+	int a[] = { 10, 11, 13, 12, 16, 18, 15, 17, 14, 19, 21, 9, 89 };
+	int size = sizeof(a)/sizeof(a[0]);
+	HeapSort(a,size);
+	Print(a,size);
+}
