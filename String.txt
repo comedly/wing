@@ -1,59 +1,196 @@
-ï»¿#pragma once
-
+#pragma once
 #include<assert.h>
-
 #include<string.h>
 
-
-//æ±‚å–å­—ç¬¦ä¸²çš„é•¿åº¦
-
-//1. åˆ©ç”¨é€’å½’æ–¹æ³•å®ç° 
-
+//ÇóÈ¡×Ö·û´®µÄ³¤¶È
+//1. ÀûÓÃµİ¹é·½·¨ÊµÏÖ 
 int my_strlen1(char* p)
-
 {
-	
 	if(*p != '\0')
-	
 	{
-		
 		return 1+my_strlen1(p+1);
-
 	}
-
 	else
-
 	{
-
-		return 0;							}
-
+		return 0;
+	}
 }
 
-									//2. åˆ©ç”¨è®¡æ•°æ³•å®ç°
-							int my_strlen2(char* p)
-							{
-										int count = 0;
-								assert(p);
-								while(*p)
-								{
-										count++;
-								p++;
-								}									return count;							}
+//2. ÀûÓÃ¼ÆÊı·¨ÊµÏÖ
+int my_strlen2(char* p)
+{
+	int count = 0;
+	assert(p);
+	while(*p)
+	{
+		count++;
+		p++;
+	}
+	return count;
+}
 
-																		//3. åˆ©ç”¨æŒ‡é’ˆå®ç°
-							int my_strlen3(const char* p)
-						{										const char* ret = p;							assert(p);
-								while (*p)								{	
-									p++;
-								}																		return p-ret;
-							}																		//å®ç°å­—ç¬¦ä¸²çš„æ‹·è´(ç®€ä¾¿å†™æ³•)
-															char *my_strcpy(char* dest,const char* src)//è¿”å›å€¼è®¾ç½®ä¸ºchar*ï¼Œä»¥ä¾¿äºé“¾å¼								{
-										char* ret = dest;
-							assert(dest);								assert(src);
-								while(*dest++ = *src++)							{
-										;																	}									return ret;//è¿”å›ç¬¬ä¸€ä¸ªå‚æ•°çš„ä¸€ä»½æ‹·è´ï¼Œå³ä¸€ä¸ªæŒ‡å‘ç›®æ ‡å­—ç¬¦ä¸²çš„æŒ‡é’ˆ
-								}
+//3. ÀûÓÃÖ¸ÕëÊµÏÖ
+int my_strlen3(const char* p)
+{
+	const char* ret = p;
+	assert(p);
+	while (*p)
+	{
+		p++;
+	}
+	return p-ret;
+}
 
+//ÊµÏÖ×Ö·û´®µÄ¿½±´(¼ò±ãĞ´·¨)
+char *my_strcpy(char* dest,const char* src)//·µ»ØÖµÉèÖÃÎªchar*£¬ÒÔ±ãÓÚÁ´Ê½·ÃÎÊ
+{
+	char* ret = dest;
+	assert(dest);
+	assert(src);
+	while(*dest++ = *src++)
+	{
+		;
+	}
+	return ret;//·µ»ØµÚÒ»¸ö²ÎÊıµÄÒ»·İ¿½±´£¬¼´Ò»¸öÖ¸ÏòÄ¿±ê×Ö·û´®µÄÖ¸Õë
+}
 
-åˆ˜é¾™
-å†™äº2016å¹´5æœˆ7æ—¥ï¼
+//Á¬½Ó×Ö·û´®
+char *my_strcat(char* dest,const char* src)//×Ö·û´®µÄÁ¬½Ó
+{
+	char* ret = dest;
+	assert(dest);
+	assert(src);
+	while (*dest)
+	{
+		dest++;
+	}
+	while (*src)
+	{
+		*dest++ = *src++; 	
+	}
+	*dest = '\0';//½áÊø±êÖ¾
+	return ret;//·µ»ØµÚÒ»¸ö²ÎÊıµÄÒ»·İ¿½±´£¬¼´Ò»¸öÖ¸ÏòÄ¿±ê×Ö·û´®µÄÖ¸Õë
+}
+
+//×Ö·û´®µÄ±È½Ï
+//Èç¹ûstr1Ğ¡ÓÚstr2£¬º¯Êı·µ»ØÒ»¸öĞ¡ÓÚ0µÄÖµ£¬Èç¹ûstr1>str2,º¯Êı·µ»ØÒ»¸ö´óÓÚ0µÄÖµ£¬ÈôÁ½¸ö×Ö·û´®ÏàµÈ£¬·µ»Ø0
+int my_strcmp(const char* str1,const char* str2)
+{
+	while (*str1 == *str2)
+	{
+		if(*str1 == '\0')
+			return 0;
+		str1++;
+		str2++;
+	}
+	return *str1 - *str2;
+}
+
+//³¤¶ÈÊÜÏŞµÄ×Ö·û´®º¯Êı
+char* my_strncpy(char* dest,const char* src,size_t len)//¿½±´³¤¶ÈÎªlenµÄ×Ö·û´®
+{
+	char* ret = dest;
+	assert(dest);
+	assert(src);	
+	while(len--)
+	{
+		*dest = *src;
+		dest++;
+		src++;
+	}
+	*dest = '\0';
+	return ret;
+}
+
+//ÔÚÄ¿±ê×Ö·û´®ºóÃæÁ´½Ó³¤¶ÈÎªlenµÄ×Ö·û´®
+char* my_strncat(char* dest,const char* src,size_t len)
+{
+	char* ret = dest;
+	assert((dest != NULL)&&(src != NULL));	
+	while(*dest != '\0')
+	{
+		dest++;
+	}
+	while ((len>0) && ((*dest++ = *src++) != '\0'))
+	{
+		len--;
+	}
+	*dest = '\0';
+	return ret;
+}
+
+//±È½ÏÁ½¸ö×Ö·û´®£¬µ«Ëû×î¶à±È½Ïlen¸ö×Ö½Ú£¬Èç¹ûÁ½¸ö×Ö·û´®ÔÚµÚlen¸ö×Ö·ûÖ®Ç°´æÔÚ²»ÏàµÈµÄ×Ö·û£¬ÔòÏñstrcmpÒ»ÑùÍ£Ö¹±È½Ï£¬·µ»Ø½á¹û£¬Èç¹ûÁ½¸ö×Ö·û´®µÄÇ°len¸ö×Ö·ûÏàµÈ£¬Ôò·µ»Ø0
+int my_strncmp(const char* str1,const char* str2,size_t len)
+{
+	assert(str1);
+	assert(str2);
+	while (((len--)>0) && (*str1 != '\0') && (*str2 != '\0'))
+	{
+		if(*str1 == *str2)
+		{
+			str1++;
+			str2++;
+		}
+		else
+		{
+			return *str1 - *str2 - '\0';
+		}
+	}
+	return *str1 - *str2 - '\0';
+}
+
+//×Ö·û´®²éÕÒ
+//¸Ãº¯ÊıÔÚ×Ö·û´®strÖĞ²éÕÒ×Ö·ûchµÚÒ»´Î³öÏÖµÄÎ»ÖÃ£¬ÈôÕÒµ½º¯Êı·µ»ØÒ»¸öÖ¸Ïò¸ÃÎ»ÖÃµÄÖ¸Õë£¬·´Ö®£¬·µ»ØNULL
+char* my_strchr(char* str,int ch)
+{
+	char* ret = str;
+	assert(str);
+	while (*ret != '\0')
+	{
+		if(*ret == ch)
+		{
+			return ret;
+		}
+		ret++;
+	}
+	return NULL;
+}
+
+//¸Ãº¯ÊıÓëstrchrº¯Êı¹¦ÄÜ»ù±¾Ò»ÖÂ£¬Ö»ÊÇËû·µ»ØÒ»¸öÖ¸Ïò¸Ã×Ö·û´®ÖĞ¸Ã×Ö·û×îºóÒ»´Î³öÏÖµÄÎ»ÖÃ£¨×îÓÒ±ßµÄÄÇ¸ö£©
+char* my_strrchr(char* str,int ch)
+{
+	register char* last = NULL;
+	register char* current = NULL;
+	if(ch != '\0')//Ö»ÓĞch²»Îª¿Õ×Ö·û²Å¿ÉÒÔ½øĞĞ²éÕÒ
+	{
+		current = my_strchr(str,ch);
+		while (current != NULL)
+		{
+			last = current;
+			current = my_strchr(last+1,ch);
+		}
+	}
+	return last;
+}
+
+//¸Ãº¯Êı·µ»ØÒ»¸öÖ¸ÏòstrÖĞµÚÒ»¸öÆ¥ÅägroupÖĞÈÎºÎÒ»¸ö×Ö·ûµÄ×Ö·ûÎ»ÖÃ£¬ÈôÃ»ÕÒµ½£¬·µ»ØNULL
+char* my_strpbrk(char* str,char* group)
+{
+	register char* s1 = str;
+	register char* s2 = group;
+	assert(str);
+	assert(group);
+	while (*s1 != '\0')
+	{
+		while (*s2 != '\0')
+		{
+			if(*s1 == *s2)
+			{
+				return s1;
+			}
+			s2++;
+		}
+		s2 = group;
+		s1++;
+	}
+}
