@@ -1,3 +1,5 @@
+//关于string内部的部分函数及部分面试题
+
 #pragma once
 #include<assert.h>
 #include<string.h>
